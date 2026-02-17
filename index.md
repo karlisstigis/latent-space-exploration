@@ -2,7 +2,7 @@
 # Searching for Novelty in Latent Spaces: <br>A Design-Oriented Exploration
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; text-align:center;">
-<iframe width="1920" height="1080"
+<iframe
 src="https://www.youtube.com/embed/UKmWy38a-3c?si=NUlFcujFksuEONaY"
 title="YouTube video player" frameborder="0"
 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
