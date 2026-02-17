@@ -1,0 +1,31 @@
+"""
+Minimal node bundle for the CLIP Intermediate Export workflow.
+
+Exposes only:
+- Load OpenCLIP (Text)
+- Load Prompts CSV (Chunked)
+- Capture Activations (Cached)
+- UMAP Config
+- UMAP - Prompts
+- UMAP - Neuron Activity
+"""
+
+from .clip_model import NODE_CLASS_MAPPINGS as CLIP_NODE_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS as CLIP_NODE_DISPLAY
+from .prompt_dataset import NODE_CLASS_MAPPINGS as DATASET_NODE_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS as DATASET_NODE_DISPLAY
+from .activation_capture import NODE_CLASS_MAPPINGS as CAPTURE_NODE_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS as CAPTURE_NODE_DISPLAY
+from .umap_nodes import NODE_CLASS_MAPPINGS as UMAP_NODE_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS as UMAP_NODE_DISPLAY
+
+NODE_CLASS_MAPPINGS = {
+    **CLIP_NODE_MAPPINGS,
+    **DATASET_NODE_MAPPINGS,
+    **CAPTURE_NODE_MAPPINGS,
+    **UMAP_NODE_MAPPINGS,
+}
+
+NODE_DISPLAY_NAME_MAPPINGS = {
+    **CLIP_NODE_DISPLAY,
+    **DATASET_NODE_DISPLAY,
+    **CAPTURE_NODE_DISPLAY,
+    **UMAP_NODE_DISPLAY,
+}
+
