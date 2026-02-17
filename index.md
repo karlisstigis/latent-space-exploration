@@ -13,6 +13,7 @@ style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
 </div>
 
 
+
 The question of whether neural networks can generate novelty, and how we might even begin to look for it, is very intriguing to me. There is one problem, though: I am not a machine learning expert. Because of that, I stepped back from CLIP for a moment — focusing on reducing complexity and finding a simpler analogy to work with.
 
 Coming from a design background, color is easy to perceive, and in digital terms it consists of just three values. If we combine five colors into a palette, that gives us a fifteen-dimensional representation of that palette.
