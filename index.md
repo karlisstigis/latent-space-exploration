@@ -7,9 +7,11 @@ src="https://www.youtube.com/embed/UKmWy38a-3c?si=NUlFcujFksuEONaY"
 title="YouTube video player" frameborder="0"
 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 referrerpolicy="strict-origin-when-cross-origin"
-allowfullscreen>
+allowfullscreen
+style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
 </iframe>
 </div>
+
 
 The question of whether neural networks can generate novelty, and how we might even begin to look for it, is very intriguing to me. There is one problem, though: I am not a machine learning expert. Because of that, I stepped back from CLIP for a moment — focusing on reducing complexity and finding a simpler analogy to work with.
 
