@@ -1,5 +1,6 @@
 
-# Searching for Novelty in Latent Spaces: <br>A Design-Oriented Exploration
+# Searching for Novelty in Latent Spaces:
+## A Design-Oriented Exploration
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; text-align:center; margin-bottom: 2.5rem;">
 <iframe
