@@ -1,0 +1,412 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Searching for Novelty in Latent Spaces</title>
+  <meta
+    name="description"
+    content="A design-oriented exploration of latent spaces, color harmony structure, and CLIP intermediate representations."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-glow" aria-hidden="true"></div>
+
+  <header class="hero">
+    <p class="kicker">Research Notes</p>
+    <h1>Searching for Novelty in Latent Spaces</h1>
+    <p class="subtitle">
+      A design-oriented exploration through color palettes, embedding structure, and CLIP transformation dynamics.
+    </p>
+  </header>
+
+  <main class="content">
+    <section class="article-content">
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/UKmWy38a-3c?si=NUlFcujFksuEONaY"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <h2>Approach</h2>
+      <p>
+        The question of whether neural networks can generate novelty, and how we might even begin to look for it, is
+        very intriguing to me. There is one problem, though: I am not a machine learning expert. Because of that, I
+        stepped back from CLIP for a moment focusing on reducing complexity and finding a simpler analogy to work with.
+      </p>
+
+      <p>
+        Coming from a design background, color is easy to perceive, and in digital terms it consists of just three
+        values. If we combine five colors into a palette, that gives us a fifteen-dimensional representation of that
+        palette.
+      </p>
+
+      <figure class="inline-image">
+        <img
+          src="images/Latent_Expl_00388.jpg"
+          alt="Color-to-token and palette-to-prompt analogy slide"
+          loading="lazy"
+        />
+      </figure>
+
+      <h2>Palette Dataset</h2>
+      <p>
+        What makes color palettes especially useful is that they can be based on color harmony rules, which makes them
+        a good starting point to explore how structure might appear in latent space.
+      </p>
+      <p>
+        I built a color palette generator in
+        <a href="https://www.sidefx.com/products/houdini/" target="_blank" rel="noopener noreferrer">Houdini</a>,
+        similar to the one available on
+        <a href="https://color.adobe.com" target="_blank" rel="noopener noreferrer">Adobe Color</a>
+        so that I can generate as many palettes as necessary and adjust parameters procedurally.
+      </p>
+
+      <figure class="inline-image">
+        <img src="images/Latent_Expl_02272.jpg" alt="Houdini palette generation system" loading="lazy" />
+        <figcaption>Houdini palette generation system.</figcaption>
+      </figure>
+
+      <figure class="inline-image">
+        <img src="images/Color_Rules.jpg" alt="Harmony-rules" loading="lazy" />
+      </figure>
+
+      <p>
+        After generating 1000 palettes per color harmony rule, I also scraped 1000 designer-created palettes from Adobe. These palettes are in sRGB color space with 8-bit channel values (0–255). To ensure compatibility with the generated ones, these values were converted to normalized linear RGB in the range [0,1]. This involved scaling the 8-bit values and applying an sRGB-to-linear transformation.
+      </p>
+      <p>
+        In total, the dataset comprised 8000 palettes, providing sufficient data to train the models.
+      </p>
+
+      <figure class="inline-image">
+        <img src="images/Scraped_Palettes.jpg" alt="Scraped color palettes" loading="lazy" />
+      </figure>
+
+      <h2>Research questions</h2>
+      <ul>
+        <li>How does the structure of the dataset influence the model’s learned latent space and analytical results?</li>
+        <li>Which color harmony rules can be identified in designer-created palettes, and which are most prevalent?</li>
+      </ul>
+      
+      <h2>Technical Implementation</h2>
+      <p>
+        As suggested by my professor, I chose to use the <a href="https://github.com/fastai/fastai" target="_blank" rel="noopener noreferrer">fast.ai</a> library with ResNet architecture.<br>
+        (fast.ai automatically selects the architecture depending on the situation, so I treated it as a baseline.)
+      </p>
+
+      <p>
+        The order of colors within each generated palette is defined by the generation system: primary colors appear first in the sequence of the color wheel, followed by secondary colors. Shading is applied randomly and independently of color position. Therefore, shading introduces variance but does not interact with the ordering condition.
+
+        For humans, this ordering is not particularly meaningful. However, I wanted to evaluate how strongly the model depends on this structured sequence. To test this, I created a second version of the same dataset in which the colors within each palette were randomly shuffled.
+      </p>
+      <p>
+        Designer-created palettes were also included in both datasets. Although they are not ordered according to the generation system, they were still shuffled in the randomized dataset to maintain consistency. 
+      </p>
+      <p>
+        To assess the impact of ordering under these two conditions, I trained separate models on each dataset: one on the ordered version and one on the randomized version.
+      </p>
+      <p>
+        All subsequent UMAP projections were generated using the same random seed and identical parameter settings. This minimizes stochastic variation in the dimensionality reduction process and ensures comparability across visualizations.
+      </p>  
+
+      <h2>Ordered Vs. Randomized Model</h2>
+      <p>
+        When both models are applied to the same randomized dataset, the overall cluster structures are similar, but with noticable differences. Certain data points are assigned to different clusters as well. Because the input data is identical in both cases, these differences reflect variations in the models’ learned representations rather than the data itself.
+      </p>
+
+      <figure class="inline-image">
+        <img
+          src="images/Latent_Expl_03231.jpg"
+          alt="UMAP comparison of results from models trained on randomized vs ordered datasets"
+          loading="lazy"
+        />
+      </figure>
+
+      <p>
+        When mapping the ordered palettes, the resulting structure appears strongly influenced by color relationships, with individual harmony types forming distinct and relatively well-separated clusters. In contrast, the randomized dataset produces broader clusters that contain multiple harmony types and exhibit a less coherent structure.
+      </p>
+      <p>
+        This indicates that the order inside the palette embedding plays an important role during training and
+        inference. The way data is structured influences how it is interpreted by the model. This is why, in CLIP, token embeddings must be transformed into a meaningful semantic context.
+      </p>
+      <figure class="inline-image">
+        <img
+          src="images/Latent_Expl_04702.jpg"
+          alt="UMAP comparison of results from models trained on randomized vs ordered datasets"
+          loading="lazy"
+        />
+      </figure>
+
+      <p>
+        When both models are applied to the same ordered dataset, the results are again similar, but noticable differences remain. Interestingly, the model trained on randomized data sometimes produces seemingly better separation for specific rules.
+      </p>
+
+      <figure class="inline-image">
+        <img
+          src="images/OrderedDataset_BothModels.jpg"
+          alt="UMAP comparison of results from models trained on randomized vs ordered datasets"
+          loading="lazy"
+        />
+      </figure>
+
+      <h2>Classification of Designer-Created Palettes</h2>
+      <p>
+        When looking only at designer-created palettes, most of them are concentrated in specific clusters. This suggests that the harmony rules represented in those clusters are generally more preferred by designers while the empty clusters may represent less popular or less intuitive combinations. However, the fact that some designer palettes are scattered across different clusters indicates that there is still a degree of diversity in the types of palettes that people create, even if they tend to gravitate towards certain harmony rules.
+      </p>
+
+      <figure class="inline-image">
+        <img
+          src="images/RandDataset_UserData.jpg"
+          alt="UMAP comparison of results from models trained on randomized vs ordered datasets"
+          loading="lazy"
+        />
+      </figure>
+      <figure class="inline-image">
+        <img
+          src="images/OrderedDataset_UserData.jpg"
+          alt="UMAP comparison of results from models trained on randomized vs ordered datasets"
+          loading="lazy"
+        />
+      </figure>
+
+      <p>
+        I used two different classification methods to determine which harmony rule the designer-created palettes belong to.
+      </p>
+      <ul>
+        <li>Cosine Distance to Centroids of Harmony Clusters
+          <p>
+            This method classifies designer-created palettes based on their proximity to the centroids of the harmony clusters in the latent space. By calculating the cosine distance between a palette's embedding and the centroids of each cluster, we can assign it to the closest harmony type. This approach provides a straightforward way to categorize palettes according to the learned structure of the model.
+          </p>
+        </li>
+        <li>Random Forest Classifier on autoencoder latent vectors
+          <p>
+            This approach trains a Random Forest classifier on latent vectors produced by an autoencoder that was trained exclusively on the generated palettes. The autoencoder compresses the high-dimensional palette data into a lower-dimensional representation, and the classifier then predicts the corresponding harmony rule based on these latent features.
+          </p>
+        </li>
+      </ul>
+      <p>
+        The cosine distance method did not perform as well due to some datapoints being scattered across muliple clusters.
+      </p>
+      <p>
+        The Random Forest model achieved better overall performance, but it struggled to clearly distinguish between the "Shades" and "Analogous" harmony rules. Inspection of the palettes in UMAP space suggests that this confusion is plausible, as most harmony rules incorporate some degree of shading variation. Although shading was applied independently of the harmony rules and therefore should not systematically bias classification, the model may still capture overlapping features shared across multiple rules.
+      </p>
+      <p>
+        This raises the question of whether the dataset could be improved by introducing more structured shading or by adopting an alternative color representation, such as HSV instead of RGB, which may better separate hue relationships from shading effects.
+      </p>
+
+      <figure class="inline-image">
+        <img
+          src="images/Classification.jpg"
+          alt="Classification results for designer-created palettes using model-based and random forest methods"
+          loading="lazy"
+        />
+      </figure>
+
+      <figure class="inline-image">
+        <img
+          src="images/Latent_Expl_05718.jpg"
+          alt="Ordered dataset UMAP highlighting generated and designer-created palettes"
+          loading="lazy"
+        />
+      </figure>
+
+      <h2>Emergent Structure Through Transformation</h2>
+      <p>
+        After examining the UMAP results and reading work on latent space manifolds and geodesics, I began to consider how structure emerges through successive transformations. Can this process be interpreted as a form of flow across depth? This perspective was partly inspired by a video from the "Smarter Every Day" YouTube channel on Taylor–Couette flow. Although neural networks do not operate according to fluid dynamics, the analogy offers a useful conceptual lens. Do representations emerge through transformations that resemble turbulent mixing, where information becomes irreversibly entangled, or do they behave more like laminar flow, where trajectories can be followed and partially reconstructed?
+      </p>
+      <figure class="inline-image">
+        <img
+          src="images/Emerging_Space.jpg"
+          alt="Conceptual analogy of latent space transformation to fluid flow dynamics"
+          loading="lazy"
+        />
+      </figure>
+      <p>
+        This image is a conceptual visualization of how latent structure might emerge through successive transformations. It does not represent the exact mathematics, but illustrates the intuition that representations are progressively warped, mixed, and organized across depth.
+      </p>
+      <p>
+        In CLIP, token embeddings share a common coordinate space shaped by repeated transformations. As layers refine these embeddings, structure emerges within that space.
+      </p>
+
+      <h2>CLIP Intermediate Representations</h2>
+      <p>
+        After gaining more confidence with the palette project, it was time for CLIP.
+      </p>
+      <p>
+        I assembled a diverse dataset of text prompts from publicly available sources:
+      </p>
+      <ul>
+        <li><strong>COCO Captions</strong> – image captions from the COCO dataset</li>
+        <li><strong>Google Conceptual Captions</strong> – web-scale image captions</li>
+        <li><strong>Yelp Polarity</strong> – user reviews labeled by sentiment</li>
+        <li><strong>Amazon Polarity</strong> – product reviews labeled by sentiment</li>
+        <li><strong>AG News</strong> – news headlines and article bodies categorized by topic</li>
+        <li><strong>SNLI</strong> – sentence pairs for natural language inference</li>
+      </ul>
+
+      <p>
+        I then developed a 
+        <a href="https://www.comfy.org/" target="_blank" rel="noopener noreferrer">ComfyUI</a> 
+        node workflow to export intermediate token embeddings and neuron activations.
+      </p>
+
+      <figure class="feature-image">
+        <img
+          src="ComfyUI/CLIP_Intermediate_Export_Workflow_Prev.jpg"
+          alt="ComfyUI workflow screenshot for CLIP intermediate export"
+          loading="lazy"
+        />
+        <figcaption>
+          ComfyUI workflow and nodes. Open on
+          <a
+            id="node-folder-link"
+            href="https://github.com/karli/GithubPage/tree/main/ComfyUI/Nodes/CLIP_Intermediate_Export"
+            target="_blank"
+            rel="noopener noreferrer">GitHub
+          </a>
+        </figcaption>
+      </figure>
+
+      <p>
+        The next step was to visualize these representations. In Houdini, I constructed UMAP projections of embeddings and neuron activations across different layers of CLIP, enabling layer-by-layer tracking of how representations shift throughout the forward pass — almost like a timeline of the latent taking shape. Sometimes new ideas spawn and solutions emerge simply by looking at what is already there in a different way.
+      </p>
+      <p>
+        Although it is not surprising, it was also interesting to see that prompts from the same source distinctly clustered together. Probably due to the shared style, vocabulary, and themes. Although the transformation process is much more complicated for token embeddings than color palettes, parallels can be drawn in how structure emerges and evolves.
+      </p>
+      <p>
+        Neuron activation structure revealed some intriguing patterns as well. In some layers the shape splits into two distinct clusters, while in others it forms a particular geometric shape. It is not clear to me what these patterns represent, but they suggest that certain layers may be specializing in particular types of information or processing.
+      </p>
+      <figure class="inline-image">
+        <img
+          src="images/CLIP_TransformTimeline.jpg"
+          alt="CLIP transformation timeline: UMAP visualizations of embedding and neuron activation structure across layers."
+          loading="lazy"
+        />
+      </figure>
+      <figure class="inline-image">
+        <img
+          src="images/CLIP_TransformTimeline_2.jpg"
+          alt="CLIP transformation timeline: UMAP visualizations of embedding and neuron activation structure across layers."
+          loading="lazy"
+        />
+      </figure>
+
+      <p>
+        Using the same dataset, I exported neuron activation trees across layers.
+        Due to the raw activation graphs being too dense for direct interpretation, I rasterized attributes such as branching and density into volumetric representations using Houdini. The aim was to explore whether structural patterns across layers might reveal hints of manifold organization or novelty. While this requires more technical knowledge and deeper analysis, the visualization highlights how activation complexity and density evolve through the network.
+      </p>
+
+      <figure class="inline-image">
+        <img
+          src="images/Latent_Expl_11413.jpg"
+          alt="Layer-wise activation structure at an early residual stream step"
+          loading="lazy"
+        />
+        <figcaption>Layerwise activation structure at an early stage (residual stream), where clusters are still relatively local.</figcaption>
+      </figure>
+
+      <h2>Conclusions</h2>
+      <p>
+        I did not find a reliable method to detect novelty or manifold directly. However, examining how structure changes across layers suggested that focusing on transformation dynamics may be more informative than looking only at final embeddings.
+      </p>
+
+      <h2>Implementation and Tooling</h2>
+      <p>
+        The project was implemented primarily in Python, with most experimentation conducted in Jupyter notebooks within VS Code. Python was used for data processing and model training, while Houdini was used for visualization. The fast.ai library provided a high-level interface for training the models, PCA and UMAP were used for dimensionality reduction and latent space visualization. ComfyUI served as a convenient interface for extracting intermediate representations from CLIP, although the core analysis and experimentation were performed directly in code.
+      </p>
+
+      <p>
+        A significant portion of the code was developed with assistance from 
+        <a href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer">CODEX</a>, 
+        integrated into VS Code during development. While this required learning to formulate precise prompts, it proved effective in generating code for tasks ranging from data processing and model training to visualization and UI development. This allowed me to focus more on the conceptual and analytical aspects of the project while still implementing technically complex components.
+      </p>
+
+
+
+
+
+
+      
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built for GitHub Pages.</p>
+  </footer>
+
+  <div id="image-lightbox" class="lightbox" hidden>
+    <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Close image overlay">Close</button>
+    <img id="lightbox-image" class="lightbox-image" alt="" />
+    <p id="lightbox-caption" class="lightbox-caption"></p>
+  </div>
+
+  <script>
+    // If hosted on GitHub Pages, convert folder link to the matching repo path.
+    const nodeLink = document.getElementById("node-folder-link");
+    const host = window.location.hostname;
+    const pathParts = window.location.pathname.split("/").filter(Boolean);
+
+    if (host.endsWith(".github.io")) {
+      const user = host.replace(".github.io", "");
+      const repo = pathParts[0] || `${user}.github.io`;
+      nodeLink.href = `https://github.com/${user}/${repo}/tree/main/ComfyUI/Nodes/CLIP_Intermediate_Export`;
+    }
+
+    // Image lightbox (works on static hosting, including GitHub Pages).
+    const lightbox = document.getElementById("image-lightbox");
+    const lightboxImage = document.getElementById("lightbox-image");
+    const lightboxCaption = document.getElementById("lightbox-caption");
+    const lightboxClose = document.getElementById("lightbox-close");
+
+    const openLightbox = (img) => {
+      lightboxImage.src = img.src;
+      lightboxImage.alt = img.alt || "";
+      const figcaption = img.closest("figure")?.querySelector("figcaption");
+      lightboxCaption.textContent = figcaption ? figcaption.textContent.trim() : "";
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+    };
+
+    const closeLightbox = () => {
+      lightbox.hidden = true;
+      lightboxImage.src = "";
+      document.body.style.overflow = "";
+    };
+
+    document.querySelectorAll("main img").forEach((img) => {
+      img.classList.add("zoomable");
+      img.setAttribute("tabindex", "0");
+      img.setAttribute("role", "button");
+      img.setAttribute("aria-label", `${img.alt || "Image"} (open enlarged view)`);
+      img.addEventListener("click", () => openLightbox(img));
+      img.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openLightbox(img);
+        }
+      });
+    });
+
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    lightboxClose.addEventListener("click", closeLightbox);
+
+    document.addEventListener("keydown", (event) => {
+      if (!lightbox.hidden && event.key === "Escape") closeLightbox();
+    });
+  </script>
+</body>
+</html>
