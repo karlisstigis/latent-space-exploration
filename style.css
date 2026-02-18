@@ -67,7 +67,16 @@ h3 {
 .subtitle {
   color: var(--text-dim);
   max-width: 65ch;
-  margin-top: 1rem;
+  margin-top: 0.6rem;
+  font-size: clamp(1.15rem, 2.8vw, 1.55rem);
+  line-height: 1.15;
+}
+
+.author {
+  margin: 0.45rem 0 0;
+  color: #9a9a9a;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
 }
 
 .content {
