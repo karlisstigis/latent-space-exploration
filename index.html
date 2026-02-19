@@ -216,8 +216,7 @@
       <p>
           Palette project files available
           <a
-            id="node-folder-link"
-            href="https://github.com/karli/GithubPage/tree/main/Palette_Project"
+            href="https://github.com/karlisstigis/latent-space-exploration/tree/main/Palette_Project"
             target="_blank"
             rel="noopener noreferrer">here
           </a>
@@ -272,8 +271,7 @@
         <figcaption>
           ComfyUI workflow and nodes. Avialable
           <a
-            id="node-folder-link"
-            href="https://github.com/karli/GithubPage/tree/main/ComfyUI"
+            href="https://github.com/karlisstigis/latent-space-exploration/tree/main/ComfyUI"
             target="_blank"
             rel="noopener noreferrer">here
           </a>
@@ -350,17 +348,6 @@
   </div>
 
   <script>
-    // If hosted on GitHub Pages, convert folder link to the matching repo path.
-    const nodeLink = document.getElementById("node-folder-link");
-    const host = window.location.hostname;
-    const pathParts = window.location.pathname.split("/").filter(Boolean);
-
-    if (host.endsWith(".github.io")) {
-      const user = host.replace(".github.io", "");
-      const repo = pathParts[0] || `${user}.github.io`;
-      nodeLink.href = `https://github.com/${user}/${repo}/tree/main/ComfyUI`;
-    }
-
     // Image lightbox (works on static hosting, including GitHub Pages).
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
