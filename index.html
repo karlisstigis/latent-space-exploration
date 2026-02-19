@@ -185,12 +185,12 @@
         I used two different classification methods to determine which harmony rule the designer-created palettes belong to.
       </p>
       <ul>
-        <li>Cosine Distance to Centroids of Harmony Clusters
+        <li><strong>Distance to Centroids of Harmony Clusters</strong>
           <p>
             This method classifies designer-created palettes based on their proximity to the centroids of the harmony clusters in the latent space. By calculating the cosine distance between a palette's embedding and the centroids of each cluster, we can assign it to the closest harmony type. This approach provides a straightforward way to categorize palettes according to the learned structure of the model.
           </p>
         </li>
-        <li>Random Forest Classifier on autoencoder latent vectors
+        <li><strong>Random Forest Classifier on autoencoder latent vectors</strong>
           <p>
             This approach trains a Random Forest classifier on latent vectors produced by an autoencoder that was trained exclusively on the generated palettes. The autoencoder compresses the high-dimensional palette data into a lower-dimensional representation, and the classifier then predicts the corresponding harmony rule based on these latent features.
           </p>
@@ -213,14 +213,15 @@
           loading="lazy"
         />
       </figure>
-
-      <figure class="inline-image">
-        <img
-          src="images/Latent_Expl_05718.jpg"
-          alt="Ordered dataset UMAP highlighting generated and designer-created palettes"
-          loading="lazy"
-        />
-      </figure>
+      <p>
+          Palette project files available
+          <a
+            id="node-folder-link"
+            href="https://github.com/karli/GithubPage/tree/main/Palette_Project"
+            target="_blank"
+            rel="noopener noreferrer">here
+          </a>
+      </p>
 
       <h2>Emergent Structure Through Transformation</h2>
       <p>
@@ -269,12 +270,12 @@
           loading="lazy"
         />
         <figcaption>
-          ComfyUI workflow and nodes. Open on
+          ComfyUI workflow and nodes. Avialable
           <a
             id="node-folder-link"
             href="https://github.com/karli/GithubPage/tree/main/ComfyUI"
             target="_blank"
-            rel="noopener noreferrer">GitHub
+            rel="noopener noreferrer">here
           </a>
         </figcaption>
       </figure>
@@ -318,7 +319,10 @@
 
       <h2>Conclusions</h2>
       <p>
-        I did not find a reliable method to detect novelty or manifold directly. However, examining how structure changes across layers suggested that focusing on transformation dynamics may be more informative than looking only at final embeddings.
+        Both models trained on ordered and randomized palette datasets produced broadly similar latent structures. However, cluster separation during inference differed substantially depending on dataset ordering. This suggests that ordering primarily affects how latent structure is interpreted, while the learned representation itself remains comparatively stable. The extent of this effect may depend on model architecture and training configuration.
+      </p>
+      <p>
+        I did not identify a reliable method for detecting novelty or manifold structure in either project. However, examining how representations transform across layers suggests that focusing on transformation dynamics may be more informative than analyzing final embeddings alone.
       </p>
 
       <h2>Implementation and Tooling</h2>
@@ -332,12 +336,6 @@
         integrated into VS Code during development. While this required learning to formulate precise prompts, it proved effective in generating code for tasks ranging from data processing and model training to visualization and UI development. This allowed me to focus more on the conceptual and analytical aspects of the project while still implementing technically complex components.
       </p>
 
-
-
-
-
-
-      
     </section>
   </main>
 
